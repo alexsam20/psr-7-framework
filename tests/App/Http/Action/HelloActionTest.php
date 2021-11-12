@@ -2,9 +2,10 @@
 
 namespace Tests\App\Http\Action;
 
+use App\Http\Action\HelloAction;
 use Zend\Diactoros\ServerRequest;
 
-class HelloAction
+class HelloActionTest
 {
     public function testGuest()
     {
@@ -14,7 +15,7 @@ class HelloAction
         $response = $action($request);
 
         self::assertEquals(200, $response->getStstusCode());
-        self::assertEquals('Hello, Guest', $response->getBody()->getContents());
+        self::assertEquals('Hello, Guest!', $response->getBody()->getContents());
     }
 
     public function testJson()

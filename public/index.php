@@ -2,9 +2,8 @@
 
 use App\Http\Action;
 use Framework\Http\ActionResolver;
+use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
-use Framework\Http\Router\RouteCollection;
-use Framework\Http\Router\Router;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
@@ -15,23 +14,19 @@ require 'vendor/autoload.php';
 ### Debug
 
 function dump($data, $flag = 0) {
-    echo '<pre>';
-    var_dump($data);
-    echo '</pre>';
-    if ($flag !== 0)
-        exit;
+    echo '<pre>' . print_r($data, 1) . '</pre>';
+    if ($flag !== 0) exit;
 }
 
-### Initialization
-
-$routes = new RouteCollection();
+$aura = new Aura\Router\RouterContainer();
+$routes = $aura->getMap();
 
 $routes->get('home', '/', Action\HelloAction::class);
 $routes->get('about', '/about', Action\AboutAction::class);
 $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
-$routes->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class, ['id' => '\d+']);
+$routes->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class)->tokens(['id' => '\d+']);
 
-$router = new Router($routes);
+$router = new AuraRouterAdapter($aura);
 $resolver = new ActionResolver();
 
 ### Running

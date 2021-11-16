@@ -6,6 +6,9 @@ use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\JsonResponse;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -22,6 +25,7 @@ function dump($data, $flag = 0) {
 ### Initialization
 
 $params = [
+    'debug' => true,
     'users' => ['admin' => 'password', 'alex' => '12345678'],
 ];
 
@@ -43,6 +47,7 @@ $resolver = new MiddlewareResolver();
 
 $app = new Application($resolver, new Middleware\NotFoundHandler());
 
+$app->pipe(new Middleware\ErrorHandlerMiddleware($params['debug']));
 $app->pipe(Middleware\CredentialsMiddleware::class);
 $app->pipe(Middleware\ProfilerMiddleware::class);
 

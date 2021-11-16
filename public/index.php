@@ -50,18 +50,11 @@ $app = new Application($resolver, new Middleware\NotFoundHandler());
 $app->pipe(new Middleware\ErrorHandlerMiddleware($params['debug']));
 $app->pipe(Middleware\CredentialsMiddleware::class);
 $app->pipe(Middleware\ProfilerMiddleware::class);
+$app->pipe(new Framework\Http\Middleware\RouteMiddleware($router, $resolver));
 
 ### Running
 
 $request = ServerRequestFactory::fromGlobals();
-try{
-    $result = $router->match($request);
-    foreach ($result->getAttributes() as $attribute => $value) {
-        $request = $request->withAttribute($attribute, $value);
-    }
-    $app->pipe($result->getHandler());
-} catch (RequestNotMatchedException $e) {}
-
 $response = $app->run($request);
 
 ### Sending

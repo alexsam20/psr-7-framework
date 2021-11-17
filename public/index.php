@@ -5,10 +5,7 @@ use App\Http\Middleware;
 use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
-use Framework\Http\Router\Exception\RequestNotMatchedException;
-use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
 
@@ -29,7 +26,6 @@ $params = [
     'users' => ['admin' => 'password', 'alex' => '12345678'],
 ];
 
-
 $aura = new Aura\Router\RouterContainer();
 $routes = $aura->getMap();
 
@@ -43,8 +39,8 @@ $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
 $routes->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class)->tokens(['id' => '\d+']);
 
 $router = new AuraRouterAdapter($aura);
-$resolver = new MiddlewareResolver();
 
+$resolver = new MiddlewareResolver();
 $app = new Application($resolver, new Middleware\NotFoundHandler());
 
 $app->pipe(new Middleware\ErrorHandlerMiddleware($params['debug']));
@@ -56,7 +52,7 @@ $app->pipe(new Framework\Http\Middleware\DispatchMiddleware($resolver));
 ### Running
 
 $request = ServerRequestFactory::fromGlobals();
-$response = $app->run($request);
+$response = $app->run($request, new Response());
 
 ### Sending
 

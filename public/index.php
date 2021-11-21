@@ -18,13 +18,28 @@ function dump($data, $flag = 0) {
     echo '<pre>' . print_r($data, 1) . '</pre>';
     if ($flag !== 0) exit;
 }
+
 ### Configuration
 
 $container = new \Framework\Container\Container();
 
+// Parameters
+
 $container->set('debug', true);
 $container->set('users', ['admin' => 'password', 'alex' => '12345678']);
-$container->set('db', new \PDO('mysql:localhost;dbname=psr-7', 'root', ''));
+$container->set('dsn', 'mysql:localhost;dbname=psr-7');
+$container->set('username', 'root');
+$container->set('password', '');
+
+// Services
+
+$container->set('db', function () use ($container) {
+    return new \PDO(
+        $container->get('dsn'),
+        $container->get('username'),
+        $container->get('password')
+    );
+});
 
 $db = $container->get('db');
 

@@ -24,16 +24,11 @@ $container = new \Framework\Container\Container();
 
 $container->set('debug', true);
 $container->set('users', ['admin' => 'password', 'alex' => '12345678']);
-$container->set('db', new \PDO('mysql:localhost;dbname=db', 'admin', ''));
+$container->set('db', new \PDO('mysql:localhost;dbname=psr-7', 'root', ''));
 
 $db = $container->get('db');
 
 ### Initialization
-
-$params = [
-    'debug' => true,
-    'users' => ['admin' => 'password', 'alex' => '12345678'],
-];
 
 $aura = new Aura\Router\RouterContainer();
 $routes = $aura->getMap();
@@ -49,11 +44,11 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new MiddlewareResolver();
 $app = new Application($resolver, new Middleware\NotFoundHandler(), new Response());
 
-$app->pipe(new Middleware\ErrorHandlerMiddleware($params['debug']));
+$app->pipe(new Middleware\ErrorHandlerMiddleware($container->get('debug')));
 $app->pipe(Middleware\CredentialsMiddleware::class);
 $app->pipe(Middleware\ProfilerMiddleware::class);
 $app->pipe(new Framework\Http\Middleware\RouteMiddleware($router));
-$app->pipe('/cabinet', new Middleware\BasicAuthActionMiddleware($params['users']));
+$app->pipe('/cabinet', new Middleware\BasicAuthActionMiddleware($container->get('users')));
 $app->pipe(new Framework\Http\Middleware\DispatchMiddleware($resolver));
 
 ### Running

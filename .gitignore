@@ -2,4 +2,3 @@
 /vendor
 /phpunit.xml.dist
 /.phpunit.result.cache
-/tests/Framework/Http/Pipeline/MiddlewareResolver.php

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware;
+use App\Http\Action;
 use Framework\Container\Container;
 use Framework\Http\Application;
 use Framework\Http\Middleware\DispatchMiddleware;
@@ -24,8 +25,8 @@ $container->set(Router::class, function (){
     return new AuraRouterAdapter(new Aura\Router\RouterContainer());
 });
 
-$container->set(MiddlewareResolver::class, function () {
-    return new MiddlewareResolver();
+$container->set(MiddlewareResolver::class, function (Container $container) {
+    return new MiddlewareResolver($container);
 });
 
 $container->set(Middleware\BasicAuthActionMiddleware::class, function (Container $container) {

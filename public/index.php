@@ -2,9 +2,13 @@
 
 use App\Http\Action;
 use App\Http\Middleware;
+use Framework\Container\Container;
 use Framework\Http\Application;
+use Framework\Http\Middleware\DispatchMiddleware;
+use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
+use Framework\Http\Router\Router;
 use Zend\Diactoros\Response;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 use Zend\Diactoros\ServerRequestFactory;
@@ -21,50 +25,65 @@ function dump($data, $flag = 0) {
 
 ### Configuration
 
-$container = new \Framework\Container\Container();
+$container = new Container();
 
-// Parameters
+$container->set('config', [
+    'debug' => true,
+    'users' => ['admin' => 'password', 'alex' => '12345678'],
+]);
 
-$container->set('debug', true);
-$container->set('users', ['admin' => 'password', 'alex' => '12345678']);
-$container->set('dsn', 'mysql:localhost;dbname=psr-7');
-$container->set('username', 'root');
-$container->set('password', '');
-
-// Services
-
-$container->set('db', function () use ($container) {
-    return new \PDO(
-        $container->get('dsn'),
-        $container->get('username'),
-        $container->get('password')
+$container->set(Application::class, function (Container $container) {
+    return new Application(
+        $container->get(MiddlewareResolver::class),
+        new Middleware\NotFoundHandler(),
+        new Response()
     );
 });
 
-$db = $container->get('db');
+$container->set(Middleware\BasicAuthActionMiddleware::class, function (Container $container) {
+    return new Middleware\BasicAuthActionMiddleware($container->get('config')['users']);
+});
+
+$container->set(Middleware\ErrorHandlerMiddleware::class, function (Container $container) {
+    return new Middleware\ErrorHandlerMiddleware($container->get('config')['debug']);
+});
+
+$container->set(MiddlewareResolver::class, function () {
+    return new MiddlewareResolver();
+});
+
+$container->set(RouteMiddleware::class, function (Container $container) {
+    return new RouteMiddleware($container->get(Router::class));
+});
+
+$container->set(DispatchMiddleware::class, function (Container $container) {
+    return new DispatchMiddleware($container->get(MiddlewareResolver::class));
+});
+
+$container->set(Router::class, function (){
+    $aura = new Aura\Router\RouterContainer();
+    $routes = $aura->getMap();
+
+    $routes->get('home', '/', Action\HelloAction::class);
+    $routes->get('about', '/about', Action\AboutAction::class);
+    $routes->get('cabinet', '/cabinet', Action\CabinetAction::class);
+    $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
+    $routes->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class)->tokens(['id' => '\d+']);
+
+    return new AuraRouterAdapter($aura);
+});
 
 ### Initialization
 
-$aura = new Aura\Router\RouterContainer();
-$routes = $aura->getMap();
+/** @var Application $app */
+$app = $container->get(Application::class);
 
-$routes->get('home', '/', Action\HelloAction::class);
-$routes->get('about', '/about', Action\AboutAction::class);
-$routes->get('cabinet', '/cabinet', Action\CabinetAction::class);
-$routes->get('blog', '/blog', new Action\Blog\IndexAction($container->get('db')));
-$routes->get('blog_show', '/blog/{id}', new Action\Blog\ShowAction($container->get('db')))->tokens(['id' => '\d+']);
-
-$router = new AuraRouterAdapter($aura);
-
-$resolver = new MiddlewareResolver();
-$app = new Application($resolver, new Middleware\NotFoundHandler(), new Response());
-
-$app->pipe(new Middleware\ErrorHandlerMiddleware($container->get('debug')));
+$app->pipe($container->get(Middleware\ErrorHandlerMiddleware::class));
 $app->pipe(Middleware\CredentialsMiddleware::class);
 $app->pipe(Middleware\ProfilerMiddleware::class);
-$app->pipe(new Framework\Http\Middleware\RouteMiddleware($router));
-$app->pipe('/cabinet', new Middleware\BasicAuthActionMiddleware($container->get('users')));
-$app->pipe(new Framework\Http\Middleware\DispatchMiddleware($resolver));
+$app->pipe($container->get(RouteMiddleware::class));
+$app->pipe('cabinet', $container->get(Middleware\BasicAuthActionMiddleware::class));
+$app->pipe($container->get(DispatchMiddleware::class));
 
 ### Running
 

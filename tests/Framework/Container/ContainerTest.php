@@ -94,6 +94,21 @@ class ContainerTest extends TestCase
         self::assertInstanceOf(Inner::class, $inner);
     }
 
+    public function testAutowiringScalarWithDefault()
+    {
+        $container = new Container();
+
+        $scalar = $container->get(ScalarWithArrayAndDefault::class);
+
+        self::assertNotNull($scalar);
+
+        self::assertNotNull($inner = $scalar->inner);
+        self::assertInstanceOf(Inner::class, $inner);
+
+        //self::assertEquals([], $scalar->array);
+        self::assertEquals(10, $scalar->default);
+    }
+
     public function testNotFound()
     {
         $container = new Container();
@@ -118,7 +133,7 @@ class Middle
 {
     public $inner;
 
-    public function __construct(Inner $inner)
+    public function __construct(Inner $inner, $limit = 10)
     {
         $this->inner = $inner;
     }
@@ -127,4 +142,18 @@ class Middle
 class Inner
 {
     // Empty;
+}
+
+class ScalarWithArrayAndDefault
+{
+    public $inner;
+    public $array;
+    public $default;
+
+    public function __construct(Inner $inner, array $array, $default = 10)
+    {
+        $this->inner = $inner;
+        $this->array = $array;
+        $this->default = $default;
+    }
 }

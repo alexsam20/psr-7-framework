@@ -18,13 +18,22 @@ class Container
                 $reflection = new \ReflectionClass($id);
                 $arguments = [];
                 if (($constructor = $reflection->getConstructor()) !== null) {
-                    foreach ($constructor->getParameters() as $param) {
-                        $paramClass = $param->getClass();
-                        $arguments[] = $this->get($paramClass->getName());
+                    foreach ($constructor->getParameters() as $parameter) {
+                        if ($paramClass = $parameter->getClass()) {
+                            $arguments[] = $this->get($paramClass->getName());
+                        } elseif ($parameter->isArray()) {
+                            $arguments[] = [];
+                        } else {
+                            if (!$parameter->isDefaultValueAvailable()) {
+                                throw new ServiceNotFoundException('Unable to resolve "' . $parameter->getName() . '"" in service "' . $id . '"');
+                            }
+                            $arguments[] = $parameter->getDefaultValue();
+                        }
+
                     }
                 }
-                $result = $reflection->newInstanceArgs($arguments);
-                return $this->results[$id] = $result;
+                $this->results[$id] = $reflection->newInstanceArgs($arguments);
+                return $this->results[$id];
             }
             throw new ServiceNotFoundException('Undefined parameter"' . $id . '"');
         }

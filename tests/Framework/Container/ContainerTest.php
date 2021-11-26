@@ -78,6 +78,22 @@ class ContainerTest extends TestCase
         self::assertSame($value1, $value2);
     }
 
+    public function testAutowiring()
+    {
+        $container = new Container();
+
+        $outer = $container->get(Outer::class);
+
+        self::assertNotNull($outer);
+        self::assertInstanceOf(Outer::class, $outer);
+
+        self::assertNotNull($middle = $outer->middle);
+        self::assertInstanceOf(Middle::class, $middle);
+
+        self::assertNotNull($inner = $middle->inner);
+        self::assertInstanceOf(Inner::class, $inner);
+    }
+
     public function testNotFound()
     {
         $container = new Container();
@@ -86,4 +102,29 @@ class ContainerTest extends TestCase
 
         $container->get('email');
     }
+}
+
+class Outer
+{
+    public $middle;
+
+    public function __construct(Middle $middle)
+    {
+        $this->middle = $middle;
+    }
+}
+
+class Middle
+{
+    public $inner;
+
+    public function __construct(Inner $inner)
+    {
+        $this->inner = $inner;
+    }
+}
+
+class Inner
+{
+    // Empty;
 }

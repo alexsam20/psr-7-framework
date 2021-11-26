@@ -15,7 +15,16 @@ class Container
 
         if (!array_key_exists($id, $this->definition)) {
             if (class_exists($id)) {
-                return $this->results[$id] = new $id();
+                $reflection = new \ReflectionClass($id);
+                $arguments = [];
+                if (($constructor = $reflection->getConstructor()) !== null) {
+                    foreach ($constructor->getParameters() as $param) {
+                        $paramClass = $param->getClass();
+                        $arguments[] = $this->get($paramClass->getName());
+                    }
+                }
+                $result = $reflection->newInstanceArgs($arguments);
+                return $this->results[$id] = $result;
             }
             throw new ServiceNotFoundException('Undefined parameter"' . $id . '"');
         }

@@ -3,6 +3,8 @@
 namespace Framework\Http;
 
 use Framework\Http\Pipeline\MiddlewareResolver;
+use Framework\Http\Router\RouteData;
+use Framework\Http\Router\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Stratigility\MiddlewarePipe;
@@ -11,13 +13,15 @@ class Application extends MiddlewarePipe
 {
     private $resolver;
     private $default;
+    private $router;
 
-    public function __construct(MiddlewareResolver $resolver, callable $default, ResponseInterface $responsePrototype)
+    public function __construct(MiddlewareResolver $resolver, Router $router, callable $default, ResponseInterface $responsePrototype)
     {
         parent::__construct();
         $this->resolver = $resolver;
         $this->setResponsePrototype($responsePrototype);
         $this->default = $default;
+        $this->router = $router;
     }
     
     public function pipe($path, $middleware = null): MiddlewarePipe
@@ -31,5 +35,25 @@ class Application extends MiddlewarePipe
     public function run(ServerRequestInterface $request, ResponseInterface $response)
     {
         return $this($request, $response, $this->default);
+    }
+
+    public function route($name, $path, $handler, array $methods, array $options = []): void
+    {
+        $this->router->addRoute(new RouteData($name, $path, $handler, $methods, $options));
+    }
+
+    public function any($name, $path, $handler, array $options = []): void
+    {
+        $this->route($name, $path, $handler, [], $options);
+    }
+
+    public function get($name, $path, $handler, array $options = []): void
+    {
+        $this->route($name, $path, $handler, ['GET'], $options);
+    }
+
+    public function post($name, $path, $handler, array $options = []): void
+    {
+        $this->route($name, $path, $handler, ['POST'], $options);
     }
 }

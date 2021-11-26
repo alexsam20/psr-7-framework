@@ -35,6 +35,7 @@ $container->set('config', [
 $container->set(Application::class, function (Container $container) {
     return new Application(
         $container->get(MiddlewareResolver::class),
+        $container->get(Router::class),
         new Middleware\NotFoundHandler(),
         new Response()
     );
@@ -48,6 +49,10 @@ $container->set(Middleware\ErrorHandlerMiddleware::class, function (Container $c
     return new Middleware\ErrorHandlerMiddleware($container->get('config')['debug']);
 });
 
+$container->set(DispatchMiddleware::class, function (Container $container) {
+    return new DispatchMiddleware($container->get(MiddlewareResolver::class));
+});
+
 $container->set(MiddlewareResolver::class, function () {
     return new MiddlewareResolver();
 });
@@ -56,21 +61,8 @@ $container->set(RouteMiddleware::class, function (Container $container) {
     return new RouteMiddleware($container->get(Router::class));
 });
 
-$container->set(DispatchMiddleware::class, function (Container $container) {
-    return new DispatchMiddleware($container->get(MiddlewareResolver::class));
-});
-
 $container->set(Router::class, function (){
-    $aura = new Aura\Router\RouterContainer();
-    $routes = $aura->getMap();
-
-    $routes->get('home', '/', Action\HelloAction::class);
-    $routes->get('about', '/about', Action\AboutAction::class);
-    $routes->get('cabinet', '/cabinet', Action\CabinetAction::class);
-    $routes->get('blog', '/blog', Action\Blog\IndexAction::class);
-    $routes->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class)->tokens(['id' => '\d+']);
-
-    return new AuraRouterAdapter($aura);
+    return new AuraRouterAdapter(new Aura\Router\RouterContainer());
 });
 
 ### Initialization
@@ -84,6 +76,12 @@ $app->pipe(Middleware\ProfilerMiddleware::class);
 $app->pipe($container->get(RouteMiddleware::class));
 $app->pipe('cabinet', $container->get(Middleware\BasicAuthActionMiddleware::class));
 $app->pipe($container->get(DispatchMiddleware::class));
+
+$app->get('home', '/', Action\HelloAction::class);
+$app->get('about', '/about', Action\AboutAction::class);
+$app->get('cabinet', '/cabinet', Action\CabinetAction::class);
+$app->get('blog', '/blog', Action\Blog\IndexAction::class);
+$app->get('blog_show', '/blog/{id}', Action\Blog\ShowAction::class, ['tokens' => ['id' => '\d+']]);
 
 ### Running
 

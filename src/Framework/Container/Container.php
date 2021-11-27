@@ -4,8 +4,13 @@ namespace Framework\Container;
 
 class Container
 {
-    private $definition = [];
+    private $definitions = [];
     private $results = [];
+
+    public function __construct(array $definitions = [])
+    {
+        $this->definitions = $definitions;
+    }
     
     public function get($id)
     {
@@ -13,7 +18,7 @@ class Container
             return $this->results[$id];
         }
 
-        if (!array_key_exists($id, $this->definition)) {
+        if (!array_key_exists($id, $this->definitions)) {
             if (class_exists($id)) {
                 $reflection = new \ReflectionClass($id);
                 $arguments = [];
@@ -38,7 +43,7 @@ class Container
             throw new ServiceNotFoundException('Undefined parameter"' . $id . '"');
         }
         
-        $definition = $this->definition[$id];
+        $definition = $this->definitions[$id];
         
         if ($definition instanceof \Closure) {
             $this->results[$id] = $definition($this);
@@ -51,7 +56,7 @@ class Container
 
     public function has($id): bool
     {
-        return array_key_exists($id, $this->definition) || class_exists($id);
+        return array_key_exists($id, $this->definitions) || class_exists($id);
     }
 
     public function set($id, $value): void
@@ -59,6 +64,6 @@ class Container
         if (array_key_exists($id, $this->results)) {
             unset($this->results[$id]);
         }
-        $this->definition[$id] = $value;
+        $this->definitions[$id] = $value;
     }
 }

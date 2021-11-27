@@ -44,7 +44,7 @@ class Application extends MiddlewarePipe
 
     public function any($name, $path, $handler, array $options = []): void
     {
-        $this->route($name, $path, $handler, [], $options);
+        $this->route($name, $path, $handler, $options);
     }
 
     public function get($name, $path, $handler, array $options = []): void
@@ -55,5 +55,20 @@ class Application extends MiddlewarePipe
     public function post($name, $path, $handler, array $options = []): void
     {
         $this->route($name, $path, $handler, ['POST'], $options);
+    }
+
+    public function put($name, $path, $handler, array $options = []): void
+    {
+        $this->route($name, $path, $handler, ['PUT'], $options);
+    }
+
+    public function patch($name, $path, $handler, array $options = []): void
+    {
+        $this->route($name, $path, $handler, ['PATCH'], $options);
+    }
+
+    public function delete($name, $path, $handler, array $options = []): void
+    {
+        $this->route($name, $path, $handler, ['DELETE'], $options);
     }
 }

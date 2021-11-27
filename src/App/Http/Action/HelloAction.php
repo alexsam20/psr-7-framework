@@ -11,6 +11,9 @@ class HelloAction
     {
         $name = $request->getQueryParams()['name'] ?? 'Guest';
 
-        return new HtmlResponse('Hello, ' . $name . '!');
+        ob_start();
+        require 'templates/hello.php';
+        $html = ob_get_clean();
+        return new HtmlResponse($html);
     }
 }

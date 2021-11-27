@@ -2,12 +2,12 @@
 
 namespace App\Http\Action;
 
-use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\HtmlResponse;
 
 class AboutAction
 {
     public function __invoke()
     {
-        return new JsonResponse('I am a simple site');
+        return new HtmlResponse('I am a simple site');
     }
 }

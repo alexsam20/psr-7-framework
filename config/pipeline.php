@@ -9,6 +9,6 @@ $app->pipe(Middleware\CredentialsMiddleware::class);
 $app->pipe(Middleware\ProfilerMiddleware::class);
 $app->pipe(Framework\Http\Middleware\RouteMiddleware::class);
 
-$app->pipe(Middleware\BasicAuthActionMiddleware::class);
+$app->pipe('cabinet', Middleware\BasicAuthActionMiddleware::class);
 
 $app->pipe(Framework\Http\Middleware\DispatchMiddleware::class);

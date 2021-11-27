@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>Hello, <?php echo htmlspecialchars($params['name']) ?>!</h1>
+    <h1>Hello, <?php echo htmlspecialchars($name) ?>!</h1>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>

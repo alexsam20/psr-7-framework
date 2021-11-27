@@ -17,6 +17,8 @@ class HelloAction
 
     private function render($view, array $params = []): string
     {
+        extract($params, EXTR_OVERWRITE);
+
         ob_start();
         require 'templates/' . $view . '.php';
         return ob_get_clean();

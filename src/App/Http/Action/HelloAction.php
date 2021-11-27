@@ -10,10 +10,12 @@ class HelloAction
     public function __invoke(ServerRequestInterface $request)
     {
         $name = $request->getQueryParams()['name'] ?? 'Guest';
-        return new HtmlResponse($this->render('hello', $name));
+        return new HtmlResponse($this->render('hello', [
+            'name' => $name,
+        ]));
     }
 
-    private function render($view, $name): string
+    private function render($view, array $params = []): string
     {
         ob_start();
         require 'templates/' . $view . '.php';

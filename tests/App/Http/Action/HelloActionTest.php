@@ -4,9 +4,9 @@ namespace Tests\App\Http\Action;
 
 use App\Http\Action\HelloAction;
 use Framework\Template\TemplateRenderer;
-use Zend\Diactoros\ServerRequest;
+use PHPUnit\Framework\TestCase;
 
-class HelloActionTest
+class HelloActionTest extends TestCase
 {
     private $renderer;
 
@@ -16,26 +16,12 @@ class HelloActionTest
         $this->renderer = new TemplateRenderer('templates');
     }
 
-    public function testGuest()
+    public function test()
     {
         $action = new HelloAction($this->renderer);
-
-        $request = new ServerRequest();
-        $response = $action($request);
+        $response = $action();
 
         self::assertEquals(200, $response->getStstusCode());
-        self::assertContains('Hello, Guest!', $response->getBody()->getContents());
-    }
-
-    public function testJson()
-    {
-        $action = new HelloAction($this->renderer);
-
-        $request = (new ServerRequest())
-            ->withQueryParams(['name' => 'John']);
-
-        $response = $action($request);
-
-        self::assertContains('Hello, John!', $response->getBody()->getContents());
+        self::assertContains('Hello!', $response->getBody()->getContents());
     }
 }

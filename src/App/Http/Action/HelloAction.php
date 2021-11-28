@@ -17,10 +17,11 @@ class HelloAction
 
     private function render($view, array $params = []): string
     {
-        extract($params, EXTR_OVERWRITE);
+        $templateFile = 'templates/' . $view . '.php';
 
         ob_start();
-        require 'templates/' . $view . '.php';
+        extract($params, EXTR_OVERWRITE);
+        require $templateFile;
         return ob_get_clean();
     }
 }

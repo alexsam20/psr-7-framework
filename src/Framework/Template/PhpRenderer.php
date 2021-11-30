@@ -8,10 +8,12 @@ class PhpRenderer implements TemplateRenderer
     private $extends;
     private $params = [];
     private $blocks = [];
+    private $blockNames;
 
     public function __construct($path)
     {
         $this->path = $path;
+        $this->blockNames = new \SplStack();
     }
 
     public function render($view, array $params = []): string
@@ -34,13 +36,15 @@ class PhpRenderer implements TemplateRenderer
         $this->extends = $view;
     }
 
-    public function beginBlock()
+    public function beginBlock($name)
     {
+        $this->blockNames->push($name);
         ob_start();
     }
 
-    public function endBlock($name)
+    public function endBlock()
     {
+        $name = $this->blockNames->pop();
         $this->blocks[$name] = ob_get_clean();
     }
 

@@ -38,7 +38,7 @@
 
 <div class="app-content">
     <main class="container">
-
+        <? echo $this->renderBlock('breadcrumbs'); ?>
         <? echo $content; ?>
 
     </main>

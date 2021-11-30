@@ -5,8 +5,9 @@ namespace Framework\Template;
 class PhpRenderer implements TemplateRenderer
 {
     private $path;
-    private $params = [];
     private $extends;
+    private $params = [];
+    private $blocks = [];
 
     public function __construct($path)
     {
@@ -26,5 +27,25 @@ class PhpRenderer implements TemplateRenderer
             return $content;
         }
         return $this->render($this->extends, ['content' => $content,]);
+    }
+
+    public function extend($view): void
+    {
+        $this->extends = $view;
+    }
+
+    public function beginBlock()
+    {
+        ob_start();
+    }
+
+    public function endBlock($name)
+    {
+        $this->blocks[$name] = ob_get_clean();
+    }
+
+    public function renderBlock($name)
+    {
+        return $this->blocks[$name] ?? '';
     }
 }

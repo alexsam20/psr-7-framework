@@ -1,9 +1,18 @@
 <?php
 /** @var \Framework\Template\PhpRenderer $this ... */
-
 $this->params['title'] = 'About';
-$this->extends = 'layouts/default';
+$this->extend('layouts/columns');
 ?>
+<?php $this->beginBlock(); ?>
+<div class="card" style="width: 18rem;">
+    <div class="card-header">
+        <strong>Links</strong>
+    </div>
+    <div class="list-group list-group-flush">
+        <div class="list-group-item">Site navigation</div>
+    </div>
+</div>
+<?php $this->endBlock('sidebar'); ?>
 
 <nav aria-label="breadcrumb" style="padding-top: 10px;">
     <ol class="breadcrumb">

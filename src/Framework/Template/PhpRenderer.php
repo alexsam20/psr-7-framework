@@ -27,7 +27,7 @@ class PhpRenderer implements TemplateRenderer
         if ($this->extends === null) {
             return $content;
         }
-        return $this->render($this->extends, ['content' => $content,]);
+        return $this->render($this->extends);
     }
 
     public function extend($view): void
@@ -41,10 +41,14 @@ class PhpRenderer implements TemplateRenderer
         ob_start();
     }
 
-    public function endBlock()
+    public function endBlock(): void
     {
+        $content = ob_get_clean();
         $name = $this->blockNames->pop();
-        $this->blocks[$name] = ob_get_clean();
+        if (array_key_exists($name, $this->blocks)) {
+            return;
+        }
+        $this->blocks[$name] = $content;
     }
 
     public function renderBlock($name)

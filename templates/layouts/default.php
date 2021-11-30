@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title><?php echo $this->params['title'] ?? ''; ?> - App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <?php echo $this->renderBlock('meta'); ?>
     <!-- CSS only -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">

@@ -3,6 +3,9 @@
 $this->params['title'] = 'About';
 $this->extend('layouts/default');
 ?>
+<?php $this->beginBlock('meta'); ?>
+<meta name="description" content="About page description" />
+<?php $this->endBlock(); ?>
 <?php $this->beginBlock('breadcrumbs'); ?>
 <nav aria-label="breadcrumb" style="padding-top: 10px;">
     <ol class="breadcrumb">

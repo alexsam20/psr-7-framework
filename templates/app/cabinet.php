@@ -13,7 +13,7 @@
 <?php $this->endBlock(); ?>
 
 <?php $this->beginBlock('main'); ?>
-    <h1>Cabinet of <?php echo htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE) ?></h1>
+    <h1>Cabinet of <?php echo $this->encode($name); ?></h1>
 <?php $this->endBlock(); ?>
 
 <?php $this->beginBlock('sidebar'); ?>

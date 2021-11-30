@@ -43,7 +43,7 @@ class PhpRenderer implements TemplateRenderer
         $this->blocks[$name] = $content;
     }
 
-    public function ensureBlock($name)
+    public function ensureBlock($name): bool 
     {
         if ($this->hasBlock($name)) {
             return false;
@@ -68,7 +68,7 @@ class PhpRenderer implements TemplateRenderer
         $this->blocks[$name] = $content;
     }
 
-    public function renderBlock($name)
+    public function renderBlock($name): string
     {
         $block = $this->blocks[$name] ?? null;
 
@@ -79,8 +79,13 @@ class PhpRenderer implements TemplateRenderer
         return $block ?? '';
     }
 
-    public function hasBlock($name)
+    public function hasBlock($name): bool
     {
         return array_key_exists($name, $this->blocks);
+    }
+
+    public function encode($string): string
+    {
+        return htmlspecialchars($string, ENT_QUOTES | ENT_SUBSTITUTE)
     }
 }

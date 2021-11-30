@@ -1,4 +1,6 @@
 <?php
+/** @var \Framework\Template\PhpRenderer $this ... */
+
 $this->params['title'] = 'About';
 $this->extends = 'layouts/default';
 ?>

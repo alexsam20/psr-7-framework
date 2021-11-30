@@ -3,7 +3,7 @@
 ?>
 <?php
 $this->params['title'] = 'Cabinet';
-$this->extends = 'layouts/default';
+$this->extends = 'layouts/columns';
 ?>
         
 <nav aria-label="breadcrumb" style="padding-top: 10px;">

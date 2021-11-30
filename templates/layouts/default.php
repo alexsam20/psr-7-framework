@@ -20,7 +20,7 @@
 <header class="app-header">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between">
         <div class="container">
-            <a class="navbar-brand" href="/">Application</a>
+            <a class="navbar-brand" href="<?php echo $this->encode($this->path('home')); ?>">Application</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -28,8 +28,8 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="nav navbar-nav">
                         <!--<li><a class="nav-link" href="/blog"><i class="bi bi-circle-square"></i> Blog</a></li>-->
-                        <li><a class="nav-link" href="/about"><i class="bi bi-bookmarks-fill"></i> About</a></li>
-                        <li><a class="nav-link" href="/cabinet"><i class="bi bi-person-fill"></i> Cabinet</a></li>
+                        <li><a class="nav-link" href="<?php echo $this->encode($this->path('about')); ?>"><i class="bi bi-bookmarks-fill"></i> About</a></li>
+                        <li><a class="nav-link" href="<?php echo $this->encode($this->path('cabinet')); ?>"><i class="bi bi-person-fill"></i> Cabinet</a></li>
                     </ul>
                 </div>
             </div>

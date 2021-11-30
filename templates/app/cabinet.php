@@ -6,7 +6,7 @@
 <?php $this->beginBlock('breadcrumbs'); ?>
     <nav aria-label="breadcrumb" style="padding-top: 10px;">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="<?php echo $this->encode($this->path('home')); ?>">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">Cabinet</li>
         </ol>
     </nav>

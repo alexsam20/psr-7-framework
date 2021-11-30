@@ -35,6 +35,14 @@ class PhpRenderer implements TemplateRenderer
         $this->extends = $view;
     }
 
+    public function block($name, $content)
+    {
+        if ($this->hasBlock($name)) {
+            return;
+        }
+        $this->blocks[$name] = $content;
+    }
+
     public function ensureBlock($name)
     {
         if ($this->hasBlock($name)) {
@@ -62,7 +70,13 @@ class PhpRenderer implements TemplateRenderer
 
     public function renderBlock($name)
     {
-        return $this->blocks[$name] ?? '';
+        $block = $this->blocks[$name] ?? null;
+
+        if ($block instanceof \Closure) {
+            return $block();
+        }
+
+        return $block ?? '';
     }
 
     public function hasBlock($name)

@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>About</title>
+    <title><?php echo $this->params['title']; ?> - App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- CSS only -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
     <style>
         .app { display: flex; min-height: 100vh; flex-direction: column; }
-        .app-content { padding-top: 20px; flex: 1; }
+        .app-content { padding: 20px; flex: 1; }
         .app-footer {padding-bottom: 1em }
     </style>
 </head>
@@ -26,7 +26,7 @@
             <div class="form-inline">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="nav navbar-nav">
-                        <li><a class="nav-link" href="/blog"><i class="bi bi-circle-square"></i> Blog</a></li>
+                        <!--<li><a class="nav-link" href="/blog"><i class="bi bi-circle-square"></i> Blog</a></li>-->
                         <li><a class="nav-link" href="/about"><i class="bi bi-bookmarks-fill"></i> About</a></li>
                         <li><a class="nav-link" href="/cabinet"><i class="bi bi-person-fill"></i> Cabinet</a></li>
                     </ul>
@@ -39,14 +39,7 @@
 <div class="app-content">
     <main class="container">
 
-        <nav aria-label="breadcrumb" style="padding-top: 10px;">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">About</li>
-            </ol>
-        </nav>
-
-        <h1>About the site.</h1>
+        <? echo $content; ?>
 
     </main>
 </div>

@@ -19,7 +19,7 @@ class CabinetAction
     public function __invoke(ServerRequestInterface $request)
     {
         $username = $request->getAttribute(BasicAuthActionMiddleware::ATTRIBUTE);
-        return new HtmlResponse($this->template->render('cabinet', [
+        return new HtmlResponse($this->template->render('app/cabinet', [
             'name' => $username,
         ]));
     }

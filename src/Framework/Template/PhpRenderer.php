@@ -5,6 +5,8 @@ namespace Framework\Template;
 class PhpRenderer implements TemplateRenderer
 {
     private $path;
+    private $params = [];
+    private $extends;
 
     public function __construct($path)
     {
@@ -16,7 +18,13 @@ class PhpRenderer implements TemplateRenderer
         $templateFile = $this->path . '/' . $view . '.php';
         ob_start();
         extract($params, EXTR_OVERWRITE);
+        $this->extends = null;
         require $templateFile;
-        return ob_get_clean();
+        $content = ob_get_clean();
+
+        if ($this->extends === null) {
+            return $content;
+        }
+        return $this->render($this->extends, ['content' => $content,]);
     }
 }

@@ -1,8 +1,6 @@
-<?php
-/** @var \Framework\Template\PhpRenderer $this ... */
-$this->params['title'] = 'About';
-$this->extend('layouts/default');
-?>
+<?php /** @var \Framework\Template\PhpRenderer $this ... */ ?>
+<?php $this->extend('layouts/default'); ?>
+<?php $this->beginBlock('title'); ?>About<?php $this->endBlock(); ?>
 <?php $this->beginBlock('meta'); ?>
 <meta name="description" content="About page description" />
 <?php $this->endBlock(); ?>
@@ -15,4 +13,6 @@ $this->extend('layouts/default');
 </nav>
 <?php $this->endBlock(); ?>
 
+<?php $this->beginBlock('content'); ?>
 <h1>About the site.</h1>
+<?php $this->endBlock(); ?>

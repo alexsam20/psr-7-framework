@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title><?php echo $this->params['title'] ?? ''; ?> - App</title>
+    <title><?php echo $this->renderBlock('title'); ?> - App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <?php echo $this->renderBlock('meta'); ?>
     <!-- CSS only -->
@@ -40,7 +40,7 @@
 <div class="app-content">
     <main class="container">
         <? echo $this->renderBlock('breadcrumbs'); ?>
-        <? echo $content; ?>
+        <? echo $this->renderBlock('content'); ?>
 
     </main>
 </div>

@@ -27,7 +27,7 @@
             <div class="form-inline">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="nav navbar-nav">
-                        <!--<li><a class="nav-link" href="/blog"><i class="bi bi-circle-square"></i> Blog</a></li>-->
+                        <li><a class="nav-link" href="/blog"><i class="bi bi-circle-square"></i> Blog</a></li>
                         <li><a class="nav-link" href="<?php echo $this->encode($this->path('about')); ?>"><i class="bi bi-bookmarks-fill"></i> About</a></li>
                         <li><a class="nav-link" href="<?php echo $this->encode($this->path('cabinet')); ?>"><i class="bi bi-person-fill"></i> Cabinet</a></li>
                     </ul>

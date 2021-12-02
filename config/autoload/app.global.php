@@ -30,7 +30,10 @@ return [
                 return new MiddlewareResolver($container);
             },
             Middleware\ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
-                return new Middleware\ErrorHandlerMiddleware($container->get('config')['debug']);
+                return new Middleware\ErrorHandlerMiddleware(
+                    $container->get('config')['debug'],
+                    $container->get(TemplateRenderer::class)
+                );
             },
             TemplateRenderer::class => function (ContainerInterface $container) {
                 return new PhpRenderer('templates', $container->get(Router::class));

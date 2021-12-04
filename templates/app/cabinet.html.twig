@@ -1,0 +1,37 @@
+{% extends 'layouts/columns.html.twig' %}
+
+{% block title %}Cabinet Page title{% endblock %}
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb" style="padding-top: 10px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Cabinet</li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block main %}
+    <h1>Cabinet of {{ name }}</h1>
+{% endblock %}
+
+{#<div class="col-md-3">
+    #}{#{% block sidebar %}#}{#
+        <div class="card mb-3">
+            <div class="card-header">Site</div>
+            <div class="card-body">
+                Site navigation
+            </div>
+        </div>
+    #}{#{% endblock %}#}{#
+</div>#}
+
+
+{% block sidebar %}
+<div class="col-md-3" style="width: 260px;">
+        <div class="card mb-3" >
+            <div class="card-header">Cabinet</div>
+            <div class="card-body">Cabinet navigation</div>
+        </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'layouts/columns.html.twig' %}
+
+{% block title %}About Page title{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="About Page description" />
+{% endblock %}
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb" style="padding-top: 10px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">About</li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block main %}
+    <h1>About the site</h1>
+{% endblock %}

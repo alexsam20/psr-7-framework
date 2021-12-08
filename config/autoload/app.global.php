@@ -37,19 +37,22 @@ return [
                 );
             },
             TemplateRenderer::class => function (ContainerInterface $container) {
-                return new TwigRenderer($container->get(Twig\Environment::class), '.html.twig');
+                return new TwigRenderer(
+                    $container->get(Twig\Environment::class),
+                    $container->get('config')['templates']['extension']
+                );
             },
             Twig\Environment::class => function(ContainerInterface $container)
             {
-                $templateDir = 'templates';
-                $cacheDir = 'var/cache/twig';
                 $debug = $container->get('config')['debug'];
+                $templateDir = $container->get('config')['twig']['template_dir'];
+                $config = $container->get('config')['twig'];
 
                 $loader = new Twig\Loader\FilesystemLoader();
                 $loader->addPath($templateDir);
 
                 $environment = new Twig\Environment($loader, [
-                    'cache' => $debug ? false : $cacheDir,
+                    'cache' => $debug ? false : $config['cache_dir'],
                     'debug' => $debug,
                     'strict_variables' => $debug,
                     'auto_reload' => $debug,
@@ -67,4 +70,13 @@ return [
     ],
 
     'debug' => false,
+
+    'templates' => [
+        'extension' => '.html.twig',
+    ],
+    
+    'twig' => [
+        'template_dir' => 'templates',
+        'cache_dir' => 'var/cache/twig'
+    ],
 ];

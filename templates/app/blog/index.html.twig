@@ -16,7 +16,13 @@
 {% block content %}
     <h1>Blog</h1>
 
+    {% set total = posts|length %}
+
     {% for post in posts %}
+
+        {% if loop.index == total %}
+            <hr />
+        {% endif %}
 
         <div class="card mb-3">
             <div class="card-header">

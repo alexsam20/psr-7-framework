@@ -12,21 +12,23 @@ class MiddlewareResolver
 {
 
     private $container;
+    private $responsePrototype;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, ResponseInterface $responsePrototype)
     {
         $this->container = $container;
+        $this->responsePrototype = $responsePrototype;
     }
 
-    public function resolve($handler, ResponseInterface $responsePrototype): callable
+    public function resolve($handler): callable
     {
         if (\is_array($handler)) {
-            return $this->createPipe($handler, $responsePrototype);
+            return $this->createPipe($handler);
         }
 
         if(\is_string($handler) && $this->container->has($handler)) {
-            return function (ServerRequestInterface $request, ResponseInterface $response, callable $next) use ($handler, $responsePrototype) {
-                $middleware = $this->resolve($this->container->get($handler), $responsePrototype);
+            return function (ServerRequestInterface $request, ResponseInterface $response, callable $next) use ($handler) {
+                $middleware = $this->resolve($this->container->get($handler));
                 return $middleware($request, $response, $next);
             };
         }
@@ -42,7 +44,7 @@ class MiddlewareResolver
             if ($reflection->hasMethod('__invoke')) {
                 $method = $reflection->getMethod('__invoke');
                 $parameters = $method->getParameters();
-                if (count($parameters) === 2 && $parameters[1]->isCallable()) {
+                if (\count($parameters) === 2 && $parameters[1]->isCallable()) {
                     return function (ServerRequestInterface $request, ResponseInterface $response, callable $next) use ($handler) {
                         return $handler($request, $next);
                     };
@@ -54,12 +56,12 @@ class MiddlewareResolver
         throw new UnknownMiddlewareTypeException($handler);
     }
 
-    public function createPipe(array $handlers, $responsePrototype): MiddlewarePipe
+    public function createPipe(array $handlers): MiddlewarePipe
     {
         $pipeline = new MiddlewarePipe();
-        $pipeline->setResponsePrototype($responsePrototype);
+        $pipeline->setResponsePrototype($this->responsePrototype);
         foreach ($handlers as $handler) {
-            $pipeline->pipe($this->resolve($handler, $responsePrototype));
+            $pipeline->pipe($this->resolve($handler));
         }
         return $pipeline;
     }

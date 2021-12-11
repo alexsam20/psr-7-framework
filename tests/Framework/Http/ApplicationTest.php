@@ -7,6 +7,7 @@ use Framework\Http\Router\Router;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tests\Framework\Http\DummyContainer;
 use Zend\Diactoros\Response;
@@ -48,19 +49,19 @@ class ApplicationTest extends TestCase
     }
 }
 
-class Middleware1
+class Middleware1 implements MiddlewareInterface
 {
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return $next($request->withAttribute('middleware-1', 1));
+        return $handler->handle($request->withAttribute('middleware-1', 1));
     }
 }
 
-class Middleware2
+class Middleware2 implements MiddlewareInterface
 {
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request,RequestHandlerInterface $handler): ResponseInterface
     {
-        return $next($request->withAttribute('middleware-2', 2));
+        return $handler->handle($request->withAttribute('middleware-2', 2));
     }
 }
 

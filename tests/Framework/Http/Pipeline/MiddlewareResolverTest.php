@@ -25,10 +25,8 @@ class MiddlewareResolverTest extends TestCase
         $resolver = new MiddlewareResolver(new DummyContainer(), new Response());
         $middleware = $resolver->resolve($handler);
 
-        /** @var ResponseInterface $response */
-        $response = $middleware(
+        $response = $middleware->process(
             (new ServerRequest())->withAttribute('attribute', $value = 'value'),
-            new Response(),
             new NotFoundMiddleware()
         );
 

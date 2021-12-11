@@ -7,6 +7,7 @@ use Framework\Http\Router\Router;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Tests\Framework\Http\DummyContainer;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\JsonResponse;
@@ -63,9 +64,9 @@ class Middleware2
     }
 }
 
-class DefaultHandler
+class DefaultHandler implements RequestHandlerInterface
 {
-    public function __invoke(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return  new JsonResponse($request->getAttributes());
     }

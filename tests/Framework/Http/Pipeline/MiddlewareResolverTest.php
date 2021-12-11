@@ -45,9 +45,8 @@ class MiddlewareResolverTest extends TestCase
         $middleware = $resolver->resolve($handler);
 
         /** @var ResponseInterface $response */
-        $response = $middleware(
+        $response = $middleware->process(
             (new ServerRequest())->withAttribute('next', true),
-            new Response(),
             new NotFoundMiddleware()
         );
 
@@ -90,9 +89,8 @@ class MiddlewareResolverTest extends TestCase
         ]);
 
         /** @var ResponseInterface $response */
-        $response = $middleware(
+        $response = $middleware->process(
             (new ServerRequest())->withAttribute('attribute', $value = 'value'),
-            new Response(),
             new NotFoundMiddleware()
         );
 
@@ -137,9 +135,30 @@ class InteropMiddleware implements MiddlewareInterface
     }
 }
 
-class NotFoundMiddleware
+class PsrMiddleware implements MiddlewareInterface
 {
-    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        if ($request->getAttribute('next')) {
+            return $handler->handle($request);
+        }
+        return (new HtmlResponse(''))
+            ->withHeader('X-Header', $request->getAttribute('attribute'));
+    }
+}
+
+class PsrHandler implements RequestHandlerInterface
+{
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        return (new HtmlResponse(''))
+            ->withHeader('X-Header', $request->getAttribute('attribute'));
+    }
+}
+
+class NotFoundMiddleware implements RequestHandlerInterface
+{
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return new EmptyResponse(404);
     }

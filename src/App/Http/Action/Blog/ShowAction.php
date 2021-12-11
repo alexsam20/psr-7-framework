@@ -4,10 +4,13 @@ namespace App\Http\Action\Blog;
 
 use App\ReadModel\PostReadRepository;
 use Framework\Template\TemplateRenderer;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\Response\HtmlResponse;
 
-class ShowAction
+class ShowAction implements RequestHandlerInterface
 {
     private $posts;
     private $template;
@@ -18,10 +21,10 @@ class ShowAction
         $this->template = $template;
     }
 
-    public function __invoke(ServerRequestInterface $request, callable $next)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        if (!$post = $this->posts->find($request->getAttribute('id'))){
-            return $next($request);
+        if (!$post = $this->posts->find($request->getAttribute('id'))) {
+            return new EmptyResponse();
         }
 
         return new HtmlResponse($this->template->render('app/blog/show', [

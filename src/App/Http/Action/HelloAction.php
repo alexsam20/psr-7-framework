@@ -1,12 +1,13 @@
 <?php
-
 namespace App\Http\Action;
 
 use Framework\Template\TemplateRenderer;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
-class HelloAction
+class HelloAction implements RequestHandlerInterface
 {
     private $template;
 
@@ -15,10 +16,8 @@ class HelloAction
         $this->template = $template;
     }
 
-    public function __invoke()
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return new HtmlResponse($this->template->render('app/hello'));
     }
-
-    
 }

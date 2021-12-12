@@ -33,9 +33,19 @@ return [
                 );
             },
             ErrorHandler\ErrorResponseGenerator::class => function (ContainerInterface $container) {
+                if ($container->get('config')['debug']) {
+                    return new ErrorHandler\DebugErrorResponseGenerator(
+                        $container->get(TemplateRenderer::class),
+                        'error/error-debug'
+                    );
+                }
                 return new ErrorHandler\PrettyErrorResponseGenerator(
-                    $container->get('config')['debug'],
-                    $container->get(TemplateRenderer::class)
+                    $container->get(TemplateRenderer::class),
+                    [
+                        '404' => 'error/404',
+                        '403' => 'error/403',
+                        'error' => 'error/error',
+                    ]
                 );
             },
         ],

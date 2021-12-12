@@ -36,11 +36,13 @@ return [
                 if ($container->get('config')['debug']) {
                     return new ErrorHandler\DebugErrorResponseGenerator(
                         $container->get(TemplateRenderer::class),
+                        new Zend\Diactoros\Response(),
                         'error/error-debug'
                     );
                 }
                 return new ErrorHandler\PrettyErrorResponseGenerator(
                     $container->get(TemplateRenderer::class),
+                    new Zend\Diactoros\Response(),
                     [
                         '404' => 'error/404',
                         '403' => 'error/403',

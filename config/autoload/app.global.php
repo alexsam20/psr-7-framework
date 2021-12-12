@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Middleware\ErrorHandler;
+use Framework\Http\Middleware\ErrorHandler;
 use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
 use Framework\Template\TemplateRenderer;
+use Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
 use Psr\Container\ContainerInterface;
 
 return [
@@ -39,7 +40,7 @@ return [
                         new Zend\Diactoros\Response(),
                     );
                 }
-                return new ErrorHandler\PrettyErrorResponseGenerator(
+                return new PrettyErrorResponseGenerator(
                     $container->get(TemplateRenderer::class),
                     new Zend\Diactoros\Response(),
                     [

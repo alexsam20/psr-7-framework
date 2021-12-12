@@ -16,6 +16,7 @@
     "zendframework/zend-stratigility": "3.0"
   },
   "require-dev": {
+    "filp/whoops": "^2.14",
     "phpunit/phpunit": "^9.5",
     "roave/security-advisories": "dev-master"
   },

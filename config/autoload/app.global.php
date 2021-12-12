@@ -34,10 +34,9 @@ return [
             },
             ErrorHandler\ErrorResponseGenerator::class => function (ContainerInterface $container) {
                 if ($container->get('config')['debug']) {
-                    return new ErrorHandler\DebugErrorResponseGenerator(
-                        $container->get(TemplateRenderer::class),
+                    return new ErrorHandler\WhoopsErrorResponseGenerator(
+                        $container->get(Whoops\RunInterface::class),
                         new Zend\Diactoros\Response(),
-                        'error/error-debug'
                     );
                 }
                 return new ErrorHandler\PrettyErrorResponseGenerator(
@@ -50,6 +49,14 @@ return [
                     ]
                 );
             },
+            Whoops\RunInterface::class => function () {
+                $whoops = new Whoops\Run();
+                $whoops->writeToOutput(false);
+                $whoops->allowQuit(false);
+                $whoops->pushHandler(new Whoops\Handler\PrettyPageHandler());
+                $whoops->register();
+                return $whoops;
+            }
         ],
     ],
 

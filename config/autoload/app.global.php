@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware;
+use App\Http\Middleware\ErrorHandler;
 use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
@@ -18,8 +18,7 @@ return [
                 return new Application(
                     $container->get(MiddlewareResolver::class),
                     $container->get(Router::class),
-                    $container->get(Middleware\NotFoundHandler::class),
-                    new Zend\Diactoros\Response()
+                    $container->get(App\Http\Middleware\NotFoundHandler::class)
                 );
             },
             Router::class => function () {
@@ -28,8 +27,13 @@ return [
             MiddlewareResolver::class => function (ContainerInterface $container) {
                 return new MiddlewareResolver($container, new Zend\Diactoros\Response());
             },
-            Middleware\ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
-                return new Middleware\ErrorHandlerMiddleware(
+            ErrorHandler\ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
+                return new ErrorHandler\ErrorHandlerMiddleware(
+                    $container->get(ErrorHandler\ErrorResponseGenerator::class)
+                );
+            },
+            ErrorHandler\ErrorResponseGenerator::class => function (ContainerInterface $container) {
+                return new ErrorHandler\PrettyErrorResponseGenerator(
                     $container->get('config')['debug'],
                     $container->get(TemplateRenderer::class)
                 );

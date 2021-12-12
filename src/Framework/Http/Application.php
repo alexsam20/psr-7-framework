@@ -18,20 +18,17 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
     private $default;
     private $router;
     private $pipeline;
-    private $responsePrototype;
 
     public function __construct(
         MiddlewareResolver $resolver,
         Router $router,
-        RequestHandlerInterface $default,
-        ResponseInterface $responsePrototype
+        RequestHandlerInterface $default
     )
     {
         $this->resolver = $resolver;
         $this->router = $router;
         $this->pipeline = new MiddlewarePipe();
         $this->default = $default;
-        $this->responsePrototype = $responsePrototype;
     }
     
     public function pipe($path, $middleware = null): void

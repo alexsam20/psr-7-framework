@@ -6,6 +6,7 @@ use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
 use Framework\Template\TemplateRenderer;
+use Infrastructure\Framework\Http\Middleware\ErrorHandler\LogErrorListener;
 use Infrastructure\Framework\Http\Middleware\ErrorHandler\PrettyErrorResponseGenerator;
 use Psr\Container\ContainerInterface;
 
@@ -29,10 +30,11 @@ return [
                 return new MiddlewareResolver($container, new Zend\Diactoros\Response());
             },
             ErrorHandler\ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
-                return new ErrorHandler\ErrorHandlerMiddleware(
-                    $container->get(ErrorHandler\ErrorResponseGenerator::class),
-                    $container->get(Psr\Log\LoggerInterface::class)
+                $middleware = new ErrorHandler\ErrorHandlerMiddleware(
+                    $container->get(ErrorHandler\ErrorResponseGenerator::class)
                 );
+                $middleware->addListener($container->get(LogErrorListener::class));
+                return $middleware;
             },
             ErrorHandler\ErrorResponseGenerator::class => function (ContainerInterface $container) {
                 if ($container->get('config')['debug']) {

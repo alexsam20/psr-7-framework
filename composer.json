@@ -33,6 +33,10 @@
   },
   "scripts": {
     "serve": "php -S 0.0.0.0:8080 -t public",
+    "check": [
+      "@cs-check",
+      "@test"
+    ],
     "test": "phpunit",
     "cs-check": "phpcs",
     "cs-fix": "phpcbf",

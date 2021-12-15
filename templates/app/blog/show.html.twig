@@ -7,18 +7,15 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-    <nav aria-label="breadcrumb" style="padding-top: 10px;">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('blog') }}">Blog</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
-        </ol>
-    </nav>
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('blog') }}">Blog</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
+    </ul>
 {% endblock %}
 
 {% block content %}
     <h1>{{ post.title }}</h1>
-
     <div class="card">
         <div class="card-header">{{ post.date|date('Y-m-d') }}</div>
         <div class="card-body">

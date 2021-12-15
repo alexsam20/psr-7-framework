@@ -23,14 +23,13 @@ class Application implements MiddlewareInterface, RequestHandlerInterface
         MiddlewareResolver $resolver,
         Router $router,
         RequestHandlerInterface $default
-    )
-    {
+    ) {
         $this->resolver = $resolver;
         $this->router = $router;
         $this->pipeline = new MiddlewarePipe();
         $this->default = $default;
     }
-    
+
     public function pipe($path, $middleware = null): void
     {
         if ($middleware === null) {

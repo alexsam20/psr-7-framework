@@ -28,7 +28,7 @@ class MiddlewareResolver
             return $this->createPipe($handler);
         }
 
-        if(\is_string($handler) && $this->container->has($handler)) {
+        if (\is_string($handler) && $this->container->has($handler)) {
             return new LazyMiddlewareDecorator($this, $this->container, $handler);
         }
 

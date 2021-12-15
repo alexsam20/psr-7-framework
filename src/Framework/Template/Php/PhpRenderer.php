@@ -61,7 +61,7 @@ class PhpRenderer implements TemplateRenderer
         $this->blocks[$name] = $content;
     }
 
-    public function ensureBlock($name): bool 
+    public function ensureBlock($name): bool
     {
         if ($this->hasBlock($name)) {
             return false;

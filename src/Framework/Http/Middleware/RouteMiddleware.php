@@ -21,7 +21,7 @@ class RouteMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        try{
+        try {
             $result = $this->router->match($request);
             foreach ($result->getAttributes() as $attribute => $value) {
                 $request = $request->withAttribute($attribute, $value);

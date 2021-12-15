@@ -2,7 +2,7 @@
 
 namespace Framework\Template;
 
-Interface TemplateRenderer
+interface TemplateRenderer
 {
     public function render($name, array $params = []): string;
 }

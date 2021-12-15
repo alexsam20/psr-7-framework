@@ -28,7 +28,7 @@ class PrettyErrorResponseGenerator implements ErrorResponseGenerator
         $response = $this->response->withStatus($code);
         $response
             ->getBody()
-            ->write($this->template->render($this->getView($code),[
+            ->write($this->template->render($this->getView($code), [
                 'request' => $request,
                 'exception' => $e,
             ]));

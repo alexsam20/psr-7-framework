@@ -2,26 +2,30 @@
 
 namespace App\Console\Command;
 
-class CacheClearCommand
+use App\Service\FileManager;
+use Framework\Console\Command;
+use Framework\Console\Input;
+use Framework\Console\Output;
+
+class CacheClearCommand implements Command
 {
-    private array $paths = [
-        'twig' => 'var/cache/twig',
-        'db'   => 'var/cache/db',
-    ];
+    private $paths;
+    private $files;
 
-    public function execute($args): void
+    public function __construct(array $paths, FileManager $files)
     {
-        echo 'Clearing cache'. PHP_EOL;
+        $this->paths = $paths;
+        $this->files = $files;
+    }
 
-        $alias = $args[0] ?? '';
+    public function execute(Input $input, Output $output): void
+    {
+        $output->comment('Clearing cache');
+
+        $alias = $input->getArgument(1);
 
         if (empty($alias)) {
-            $options = array_merge(['all'], array_keys($this->paths));
-            do {
-                fwrite(\STDOUT, 'Choose path [' . implode(',', $options) . ']: ');
-                $choose = trim(fgets(\STDIN));
-            } while (!\in_array($choose, $options, true));
-            $alias = $choose;
+            $alias = $input->choose('Choose path', array_merge(array_keys($this->paths), ['all']));
         }
         if ($alias === 'all') {
             $paths = $this->paths;
@@ -33,36 +37,13 @@ class CacheClearCommand
         }
 
         foreach ($paths as $path) {
-            if (file_exists($path)) {
-                echo 'Remove ' . $path . PHP_EOL;
-                $this->delete($path);
+            if ($this->files->exists($path)) {
+                $output->writeLn('Remove ' . $path);
+                $this->files->delete($path);
             } else {
-                echo 'Skip ' . $path . PHP_EOL;
+                $output->writeLn('Skip ' . $path);
             }
         }
-        echo 'Done!'. PHP_EOL;
-    }
-
-    private function delete(string $path): void
-    {
-        if (!file_exists($path)) {
-            throw new \RuntimeException('Undefined path ' . $path);
-        }
-
-        if (is_dir($path)) {
-            foreach (scandir($path, SCANDIR_SORT_ASCENDING) as $item) {
-                if ($item === '.' || $item === '..') {
-                    continue;
-                }
-                $this->delete($path . DIRECTORY_SEPARATOR . $item);
-            }
-            if (!rmdir($path)) {
-                throw new \RuntimeException('Unable to delete directory' . $path);
-            }
-        } else {
-            if (!unlink($path)) {
-                throw new \RuntimeException('Unable to delete file' . $path);
-            }
-        }
+        $output->writeLn('Done!');
     }
 }

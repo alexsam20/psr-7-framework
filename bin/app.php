@@ -2,6 +2,7 @@
 <?php
 
 use App\Console\Command\CacheClearCommand;
+use Framework\Console\Application;
 use Framework\Console\Input;
 use Framework\Console\Output;
 
@@ -13,36 +14,14 @@ require 'vendor/autoload.php';
  */
 $container = require 'config/container.php';
 
-$commands = [
-    [
-        'name' => 'cache:clear',
-        'command' => CacheClearCommand::class,
-        'description' => 'Clear cache',
-    ]
-];
+$cli = new Application();
 
-$input = new Input($argv);
-$output = new Output();
-$name = $input->getArgument(0);
-
-if (!empty($name)) {
-    foreach ($commands as $definition) {
-        if ($definition['name'] === $name) {
-            /** @var Framework\Console\Command $command */
-            $command = $container->get($definition['command']);
-            $command->execute($input, $output);
-            exit;
-        }
-    }
-    throw new InvalidArgumentException('Undefined command ' . $name);
+$commands = $container->get('config')['console']['commands'];
+foreach ($commands as $command) {
+    $cli->add($container->get($command));
 }
 
-$output->writeLn('Available commands:');
-$output->writeLn('');
-foreach ($commands as $definition) {
-    $output->writeLn($definition['name'] . "\t" . $definition['description']);
-}
-$output->writeLn('');
+$cli->run(new Input($argv), new Output());
 
 $logger = $container->get(Psr\Log\LoggerInterface::class);
 $logger->info('Clearing cache');

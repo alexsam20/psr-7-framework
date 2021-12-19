@@ -3,9 +3,12 @@
 namespace App\Console\Command;
 
 use App\Service\FileManager;
-use Framework\Console\Command;
-use Framework\Console\Input;
-use Framework\Console\Output;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class CacheClearCommand extends Command
 {
@@ -23,17 +26,21 @@ class CacheClearCommand extends Command
     {
         $this
             ->setName('cache:clear')
-            ->setDescription('Clear cache');
+            ->setDescription('Clear cache')
+            ->addArgument('alias', InputArgument::OPTIONAL, 'The alias of available paths.');
     }
 
-    public function execute(Input $input, Output $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->comment('Clearing cache');
+        $output->writeln('<comment>Clearing cache</comment>');
 
-        $alias = $input->getArgument(1);
+        $alias = $input->getArgument('alias');
 
         if (empty($alias)) {
-            $alias = $input->choose('Choose path', array_merge(array_keys($this->paths), ['all']));
+            $helper = $this->getHelper('question');
+            $options = array_merge(['all'], array_keys($this->paths));
+            $question = new ChoiceQuestion('Choose path', $options, 0);
+            $alias = $helper->ask($input, $output, $question);
         }
         if ($alias === 'all') {
             $paths = $this->paths;
@@ -52,6 +59,10 @@ class CacheClearCommand extends Command
                 $output->writeLn('Skip ' . $path);
             }
         }
-        $output->writeLn('Done!');
+        $container = require 'config/container.php';
+        $logger = $container->get(LoggerInterface::class);
+        $logger->info('Clearing cache');
+        $output->writeLn('<info>Done!</info>');
+        return Command::SUCCESS;
     }
 }

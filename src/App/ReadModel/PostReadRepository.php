@@ -6,14 +6,11 @@ use App\ReadModel\Views\PostView;
 
 class PostReadRepository
 {
-    public $posts;
+    public $pdo;
 
-    public function __construct()
+    public function __construct(\PDO $pdo)
     {
-        $this->posts = [
-            new PostView(1, new \DateTimeImmutable(), 'The First Post', 'The First Post Content'),
-            new PostView(2, new \DateTimeImmutable(), 'The Second Post', 'The Second Post Content'),
-        ];
+        $this->pdo = $pdo;
     }
 
     /**
@@ -21,16 +18,32 @@ class PostReadRepository
      */
     public function getAll(): array
     {
-        return array_reverse($this->posts);
+        $stmt = $this->pdo->query('SELECT * FROM posts ORDER BY date DESC');
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return array_map([$this, 'hydratePost'], $rows);
     }
 
     public function find($id): ?PostView
     {
-        foreach ($this->posts as $post) {
-            if ($post->id === (int)$id) {
-                return $post;
-            }
-        }
-        return null;
+        $stmt = $this->pdo->prepare('SELECT * FROM posts WHERE id = :id');
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $row ? $this->hydratePost($row) : null;
+
+    }
+
+    private function hydratePost(array $row): PostView
+    {
+        $view = new PostView();
+
+        $view->id = (int)$row['id'];
+        $view->date = new \DateTimeImmutable($row['date']);
+        $view->title = $row['title'];
+        $view->content = $row['content'];
+
+        return $view;
     }
 }

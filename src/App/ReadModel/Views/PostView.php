@@ -9,11 +9,11 @@ class PostView
     public $title;
     public $content;
 
-    public function __construct($id, \DateTimeImmutable $date, $title, $content)
+    /*public function __construct($id, \DateTimeImmutable $date, $title, $content)
     {
         $this->id = $id;
         $this->date = $date;
         $this->title = $title;
         $this->content = $content;
-    }
+    }*/
 }

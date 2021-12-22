@@ -13,15 +13,20 @@ class PostReadRepository
         $this->pdo = $pdo;
     }
 
-    /**
-     * @return PostView[]
-     */
-    public function getAll(): array
+    public function countAll(): int
     {
-        $stmt = $this->pdo->query('SELECT * FROM posts ORDER BY date DESC');
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->query('SELECT COUNT(id) FROM posts');
+        return $stmt->fetchColumn();
+    }
 
-        return array_map([$this, 'hydratePost'], $rows);
+    public function getAll(int $offset, int $limit): array
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM posts ORDER BY id DESC LIMIT :limit OFFSET :offset');
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map([$this, 'hydratePost'], $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     public function find($id): ?PostView

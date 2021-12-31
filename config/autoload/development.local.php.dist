@@ -9,8 +9,8 @@ return [
     'dependencies' => [
         'factories' => [
             ErrorHandler\ErrorResponseGenerator::class => WhoopsErrorResponseGeneratorFactory::class,
-            Command\FixtureCommand::class => Infrastructure\App\Console\Command\FixtureCommandFactory::class,
             Whoops\RunInterface::class => WhoopsRunFactory::class,
+            Command\FixtureCommand::class => Infrastructure\App\Console\Command\FixtureCommandFactory::class,
         ],
     ],
 
@@ -18,6 +18,22 @@ return [
         'commands' => [
             Command\FixtureCommand::class,
         ]
+    ],
+
+    'doctrine' => [
+        'configuration' => [
+            'orm_default' => [
+                'result_cache' => 'array',
+                'metadata_cache' => 'array',
+                'query_cache' => 'array',
+                'hydration_cache' => 'array',
+            ],
+        ],
+        'driver' => [
+            'entities' => [
+                'cache' => 'array',
+            ],
+        ],
     ],
 
     'debug' => true,

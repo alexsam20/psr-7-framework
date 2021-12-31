@@ -7,7 +7,14 @@ return [
             'alex'  => '12345678',
         ],
     ],
-    'doctrine' => [
+
+    'pdo' => [
+            'dsn' => 'sqlite:db/db.sqlite',
+            'username' => '',
+            'password' => '',
+    ],
+
+    /*'doctrine' => [
         'connection' => [
             'orm_default' => [
                 'params' => [
@@ -15,5 +22,5 @@ return [
                 ],
             ],
         ],
-    ],
+    ],*/
 ];

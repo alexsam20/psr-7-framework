@@ -9,9 +9,13 @@ class PDOFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        /** @var EntityManagerInterface $em */
-        $em = $container->get(EntityManagerInterface::class);
+        $config = $container->get('config')['pdo'];
 
-        return $em->getConnection()->getWrappedConnection();
+        return new \PDO(
+            $config['dsn'],
+            $config['username'],
+            $config['password'],
+            $config['options']
+        );
     }
 }

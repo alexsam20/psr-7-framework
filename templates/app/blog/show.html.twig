@@ -17,9 +17,9 @@
 {% block content %}
     <h1>{{ post.title }}</h1>
     <div class="card">
-        <div class="card-header">{{ post.createDate|date('Y-m-d') }}</div>
+        <div class="card-header">{{ post.date|date('Y-m-d') }}</div>
         <div class="card-body">
-            <div class="card-text">{{ post.content.full|nl2br }}</div>
+            <div class="card-text">{{ post.content|nl2br }}</div>
         </div>
     </div>
 

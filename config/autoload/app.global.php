@@ -21,7 +21,7 @@ return [
             ErrorResponseGenerator::class => PrettyErrorResponseGeneratorFactory::class,
             Psr\Log\LoggerInterface::class => Infrastructure\App\Logger\LoggerFactory::class,
             //PDO::class => Infrastructure\App\PDOFactory::class,
-            App\ReadModel\PostReadRepository::class => Infrastructure\App\ReadModel\PostReadRepositoryFactory::class,
+            //App\ReadModel\PostReadRepository::class => Infrastructure\App\ReadModel\PostReadRepositoryFactory::class,
         ],
     ],
 

@@ -42,7 +42,7 @@ class Post
     /**
      * @var ArrayCollection|Comment[]
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="post", orphanRemoval=true, cascade={"persist"})
-     * @ORM\OrderBy({"date" = "ABC"})
+     * @ORM\OrderBy({"date" = "ASC"})
      */
     private $comments;
 
@@ -66,5 +66,58 @@ class Post
     public function addComment(\DateTimeImmutable $date, string $author, string $content): void
     {
         $this->comments->add(new Comment($this, $date, $author, $content));
+    }
+    
+    public function removeComment(int $id): void
+    {
+        foreach ($this->comments as $comment) {
+            if ($comment->getId() === $id) {
+                $this->comments->removeElement($comment);
+            }
+        }
+        throw new \DomainException('Comment is not found.');
+    }
+    
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getCreateDate(): \DateTimeImmutable
+    {
+        return $this->createDate;
+    }
+
+    public function getUpdateDate(): \DateTimeImmutable
+    {
+        return $this->createDate;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getContent(): Content
+    {
+        return $this->content;
+    }
+
+    public function getMeta(): Meta
+    {
+        return $this->meta;
+    }
+
+    /**
+     * @return Comment[]
+     */
+    public function getComments(): array
+    {
+        return $this->comments->toArray();
+    }
+
+    public function getCommentsCount(): int
+    {
+        return $this->comments->count();
     }
 }

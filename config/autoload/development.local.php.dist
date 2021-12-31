@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Command;
 use Framework\Http\Middleware\ErrorHandler;
 use Infrastructure\Framework\Http\Middleware\ErrorHandler\WhoopsErrorResponseGeneratorFactory;
 use Infrastructure\Framework\Http\Middleware\ErrorHandler\WhoopsRunFactory;
@@ -8,8 +9,15 @@ return [
     'dependencies' => [
         'factories' => [
             ErrorHandler\ErrorResponseGenerator::class => WhoopsErrorResponseGeneratorFactory::class,
+            Command\FixtureCommand::class => Infrastructure\App\Console\Command\FixtureCommandFactory::class,
             Whoops\RunInterface::class => WhoopsRunFactory::class,
         ],
+    ],
+
+    'console' => [
+        'commands' => [
+            Command\FixtureCommand::class,
+        ]
     ],
 
     'debug' => true,

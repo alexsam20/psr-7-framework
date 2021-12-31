@@ -1,9 +1,9 @@
 {% extends 'layouts/default.html.twig' %}
 
-{% block title %}{{ post.title }}{% endblock %}
+{% block title %}{{ post.meta.title }}{% endblock %}
 
 {% block meta %}
-    <meta name="description" content="{{ post.title }}" />
+    <meta name="description" content="{{ post.meta.description }}" />
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -17,10 +17,25 @@
 {% block content %}
     <h1>{{ post.title }}</h1>
     <div class="card">
-        <div class="card-header">{{ post.date|date('Y-m-d') }}</div>
+        <div class="card-header">{{ post.createDate|date('Y-m-d') }}</div>
         <div class="card-body">
-            <div class="card-text">{{ post.content|nl2br }}</div>
+            <div class="card-text">{{ post.content.full|nl2br }}</div>
         </div>
     </div>
+
+    <hr style="margin: 40px 0;">
+
+    <h2>Comments</h2>
+
+    {% for comment in post.comments %}
+        <div class="card">
+            <div class="card-header">
+                <span style="float: right;">{{ comment.date|date('Y-m-d') }}</span>
+                {{ comment.author }}
+            </div>
+            <div class="card-body">{{ comment.text|nl2br }}</div>
+        </div>
+        <br>
+    {% endfor %}
 {% endblock %}
 

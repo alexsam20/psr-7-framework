@@ -10,7 +10,7 @@ return [
     'doctrine' => [
         'connection' => [
             'orm_default' => [
-                'driver_class' => \Doctrine\DBAL\Driver\PDOSqlite\Driver::class,
+                'driver_class' => Doctrine\DBAL\Driver\PDOSqlite\Driver::class,
                 'pdo' => PDO::class,
             ],
         ],

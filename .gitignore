@@ -1,6 +1,7 @@
 /.idea
 /vendor
 /phpunit.xml.dist
+/node_modules
 /.phpunit.result.cache
 /var
 /xxx
